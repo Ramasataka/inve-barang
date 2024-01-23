@@ -95,8 +95,9 @@ if (isset($_POST['delete_data'])) {
                             <td><?= isset($data['jumlah']) ? $data['jumlah'] : 'N/A' ?></td>
                             <td>
                                 <form action='barkel.php' method='POST'>
-                                    <input type='hidden' name='id_barang_delete' value='<?= isset($data['id_barang']) ? $data['id_barang'] : '' ?>'>
+                                    <input type='hidden' name='id_barkel_delete' value='<?= isset($data['id_barkel']) ? $data['id_barkel'] : '' ?>'>
                                     <input type='hidden' name='jumlah_delete' value='<?= isset($data['jumlah']) ? $data['jumlah'] : '' ?>'>
+                                    <input type='hidden' name='id_barang_delete' value='<?= isset($data['id_barang']) ? $data['id_barang'] : '' ?>'>
                                     <button type='submit' class='btn btn-danger' name='delete_data'>Hapus</button>
                                 </form>
                             </td>

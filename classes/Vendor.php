@@ -38,7 +38,7 @@ class Vendor extends Database {
             $insertRe = $stmt->execute();
             if ($insertRe) {
                 Flasher::setFlasher('VENDOR BERHA   SIL', 'DITAMBAHKAN', 'success');
-                $redirectUrl = "vendor-tambah-data.php";
+                $redirectUrl = "vendor-tampil-data.php";
                 header("Location: $redirectUrl");
                 exit;
             exit;

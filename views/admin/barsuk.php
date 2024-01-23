@@ -29,8 +29,10 @@ if (isset($_POST['simpan_data'])){
 
 // Handle delete
 if (isset($_POST['delete_data'])) {
+    $id_barsuk_delete = $_POST['id_barsuk_delete'];
     $jumlah_delete = $_POST['jumlah_delete'];
-    $barsuk->deleteBarang($jumlah_delete);
+    $id_barang_delete = $_POST['id_barang_delete']; 
+    $barsuk->deleteBarsuk($jumlah_delete, $id_barsuk_delete, $id_barang_delete);
 }
 
 ?>
@@ -96,12 +98,13 @@ if (isset($_POST['delete_data'])) {
                                 <td><?= isset($data['jumlah']) ? $data['jumlah'] : 'N/A' ?></td>
                                 
                                 <td>
-                        <!-- Form untuk delete -->
-                            <form action='barsuk.php' method='POST'>
-                                <input type='hidden' name='id_barang_delete' value='<?= isset($data['id_barang']) ? $data['id_barang'] : '' ?>'>
-                                <input type='hidden' name='jumlah_delete' value='<?= isset($data['jumlah']) ? $data['jumlah'] : '' ?>'>
-                                <button type='submit' class='btn btn-danger' name='delete_data'>Hapus</button>
-                            </form>
+                       
+                                <form action='barsuk.php' method='POST'>
+                                    <input type='hidden' name='id_barsuk_delete' value='<?= isset($data['id_barsuk']) ? $data['id_barsuk'] : '' ?>'>
+                                    <input type='hidden' name='jumlah_delete' value='<?= isset($data['jumlah']) ? $data['jumlah'] : '' ?>'>
+                                    <input type='hidden' name='id_barang_delete' value='<?= isset($data['id_barang']) ? $data['id_barang'] : '' ?>'>
+                                    <button type='submit' class='btn btn-danger' name='delete_data'>Hapus</button>
+                                </form>
                         </td>
                                 
                             </tr>

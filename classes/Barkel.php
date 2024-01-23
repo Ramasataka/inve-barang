@@ -55,36 +55,36 @@ class Barkel extends Database
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function deleteBarangKeluar($jumlah, $id_barang)
+    public function deleteBarangKeluar($jumlah, $id_barkel)
     {
-        $pdo = $this->connectDB();
+    $pdo = $this->connectDB();
 
-        $sql = "DELETE FROM $this->tabel WHERE jumlah = :jumlah ";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':jumlah', $jumlah);
-        
+    $sql = "DELETE FROM $this->tabel WHERE id_barkel = :id_barkel AND jumlah = :jumlah";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':id_barkel', $_POST['id_barkel_delete']);
+    $stmt->bindParam(':jumlah', $_POST['jumlah_delete']);
 
-        $deleteResult = $stmt->execute();
+    $deleteResult = $stmt->execute();
 
-        if ($deleteResult) {
-            $query = "UPDATE $this->tabel_barang SET stok = stok + :jumlahStok WHERE id_barang = :id_barang";
-            $updateStok = $pdo->prepare($query);
-            $updateStok->bindParam(':jumlahStok', $jumlah);
-            $updateStok->bindParam(':id_barang', $id_barang);
-            $updateStock = $updateStok->execute();
+    if ($deleteResult) {
+        $query = "UPDATE $this->tabel_barang SET stok = stok + :jumlahStok WHERE id_barang = :id_barang";
+        $updateStok = $pdo->prepare($query);
+        $updateStok->bindParam(':jumlahStok', $jumlah);
+        $updateStok->bindParam(':id_barang', $id_barkel); 
+        $updateStock = $updateStok->execute();
 
-            if ($updateStock) {
-                Flasher::setFlasher('STOCK BERHASIL', 'DITAMBAHKAN KEMBALI', 'success');
-            } else {
-                Flasher::setFlasher('STOK BARANG GAGAL', 'DITAMBAHKAN KEMBALI', 'danger');
-            }
+        if ($updateStock) {
+            Flasher::setFlasher('STOCK BERHASIL', 'DITAMBAHKAN KEMBALI', 'success');
         } else {
-            Flasher::setFlasher('DATA BARANG KELUAR GAGAL', 'DIHAPUS', 'danger');
+            Flasher::setFlasher('STOK BARANG GAGAL', 'DITAMBAHKAN KEMBALI', 'danger');
         }
+    } else {
+        Flasher::setFlasher('DATA BARANG KELUAR GAGAL', 'DIHAPUS', 'danger');
+    }
 
-        $redirectUrl = "barkel.php";
-        header("Location: $redirectUrl");
-        exit;
+    $redirectUrl = "barkel.php";
+    header("Location: $redirectUrl");
+    exit;
     }
 
     public function pagenation()

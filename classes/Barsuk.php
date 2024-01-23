@@ -57,43 +57,39 @@ class Barsuk extends Database
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
-    public function deleteBarang($jumlah)
+    public function deleteBarsuk($jumlah, $id_barsuk, $id_barang)
     {
-        $pdo = $this->connectDB();
+    $pdo = $this->connectDB();
 
-        $sql = "DELETE FROM $this->tabel WHERE jumlah = :jumlah";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':jumlah', $jumlah);
+    $deleteQuery = "DELETE FROM $this->tabel WHERE id_barsuk = :id_barsuk AND jumlah = :jumlah AND id_barang = :id_barang" ;
+    $deleteStmt = $pdo->prepare($deleteQuery);
+    $deleteStmt->bindParam(':id_barsuk', $id_barsuk);
+    $deleteStmt->bindParam(':jumlah', $jumlah);
+    $deleteStmt->bindParam(':id_barang', $id_barang);
+
+    $deleteResult = $deleteStmt->execute();
+
+    if ($deleteResult) {
+
+        $updateStokQuery = "UPDATE $this->tabel_barang SET stok = stok - :jumlahStok WHERE id_barang = :id_barang";
+        $updateStokStmt = $pdo->prepare($updateStokQuery);
+        $updateStokStmt->bindParam(':jumlahStok', $jumlah);
+        $updateStokStmt->bindParam(':id_barang', $id_barang);
         
-        // Ambil id_barang untuk mengurangkan stok
-        $sqlGetIdBarang = "SELECT id_barang FROM $this->tabel WHERE jumlah = :jumlah";
-        $stmtGetIdBarang = $pdo->prepare($sqlGetIdBarang);
-        $stmtGetIdBarang->bindParam(':jumlah', $jumlah);
-        $stmtGetIdBarang->execute();
-        $id_barang = $stmtGetIdBarang->fetch(PDO::FETCH_ASSOC)['id_barang'];
-        
-        $deleteResult = $stmt->execute();
+        $updateStockResult = $updateStokStmt->execute();
 
-        if ($deleteResult) {
-            // Kurangi stok pada tabel barang
-            $query = "UPDATE $this->tabel_barang SET stok = stok - :jumlahStok WHERE id_barang = :id_barang";
-            $updateStok = $pdo->prepare($query);
-            $updateStok->bindParam(':jumlahStok', $jumlah);
-            $updateStok->bindParam(':id_barang', $id_barang);
-            $updateStockResult = $updateStok->execute();
-
-            if ($updateStockResult) {
-                Flasher::setFlasher('DATA BARANG MASUK BERHASIL', 'DIHAPUS', 'success');
-            } else {
-                Flasher::setFlasher('STOK BARANG GAGAL DIKURANGI', 'DIHAPUS', 'danger');
-            }
+        if ($updateStockResult) {
+            Flasher::setFlasher('DATA BARANG MASUK BERHASIL', 'DIHAPUS', 'success');
         } else {
-            Flasher::setFlasher('DATA BARANG MASUK GAGAL', 'DIHAPUS', 'danger');
+            Flasher::setFlasher('STOK BARANG GAGAL DIKURANGI', 'DIHAPUS', 'danger');
         }
+    } else {
+        Flasher::setFlasher('DATA BARANG MASUK GAGAL', 'DIHAPUS', 'danger');
+    }
 
-        $redirectUrl = "barsuk.php";
-        header("Location: $redirectUrl");
-        exit;
+    $redirectUrl = "barsuk.php";
+    header("Location: $redirectUrl");
+    exit;
     }
     
 
